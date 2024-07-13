@@ -24,7 +24,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: update release   
-      uses: zay448345045/release-apk@main 
+      uses: sangatdesai/release-apk@main 
       env: 
         GITHUB_TOKEN: ${{ secrets.token }} 
         APP_FOLDER: app
