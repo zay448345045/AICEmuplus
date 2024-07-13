@@ -60,7 +60,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4 # Necessary to access local action
       - name: github-action-release-apk
-        uses: gogoadl/github-action-release-apk@v1.0.0-alpha09
+        uses: softprops/action-gh-release@v2
         with:
           asset-name: 'debugtest.apk'
           github-token: ${{ secrets.token }}
