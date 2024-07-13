@@ -20,10 +20,24 @@ jobs:
         distribution: 'temurin'
         cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Generate Changelog
+      run: echo "# Good things have arrived" > ${{ github.workspace }}-CHANGELOG.txt
+    - name: Release
+      uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+          body_path: ${{ github.workspace }}-CHANGELOG.txt
+          repository: zay448345045/AICEmuplus
+          # note you'll typically need to create a personal access token
+          # with permissions to create releases in the other repo
+          token: ${{ secrets.token }}
+          files: |
+           output .apk
+
+
+      
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4
       with:
