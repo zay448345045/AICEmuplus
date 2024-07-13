@@ -1,0 +1,71 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ "fixed" ]
+    tags:
+      - 'v*.*.*'
+  pull_request:
+    branches:
+      - fixed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: set up JDK 20
+        uses: actions/setup-java@v4
+        with:
+          java-version: '20'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Set output
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
+
+      - name: Bump version
+        uses: chkfung/android-version-actions@v1.2.1
+        with:
+          gradlePath: app/build.gradle # or app/build.gradle.kts
+          versionCode: ${{github.run_number}}
+          versionName: ${{env.RELEASE_VERSION}}
+
+      - name: Build Debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Upload artifact Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug.apk
+          path: app/build/outputs/apk/debug/debug.apk
+
+  release:
+    permissions:
+      contents: write
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4 # Necessary to access local action
+      - name: github-action-release-apk
+        uses: gogoadl/github-action-release-apk@v1.0.0-alpha09
+        with:
+          asset-name: 'Cocktails.apk'
+          github-token: ${{ secrets.token }}
+          base64-keystore: ${{ secrets.APP_KEYSTORE_BASE64 }}
+          key-file: ${{ secrets.APP_KEY_FILE }}
+          keystore-password: ${{ secrets.APP_KEYSTORE_PASSWORD }}
+          keystore-alias: ${{ secrets.APP_KEYSTORE_ALIAS }}
+          key-password: ${{ secrets.APP_KEY_PASSWORD }}
