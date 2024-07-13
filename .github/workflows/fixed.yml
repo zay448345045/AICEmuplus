@@ -62,7 +62,7 @@ jobs:
       - name: github-action-release-apk
         uses: gogoadl/github-action-release-apk@v1.0.0-alpha09
         with:
-          asset-name: 'Cocktails.apk'
+          asset-name: 'debugtest.apk'
           github-token: ${{ secrets.token }}
           base64-keystore: ${{ secrets.APP_KEYSTORE_BASE64 }}
           key-file: ${{ secrets.APP_KEY_FILE }}
