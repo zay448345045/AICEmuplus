@@ -16,9 +16,10 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: set up JDK 22+
+      env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
       uses: actions/setup-java@v3
       with:
-        env:FORCE_JAVASCRIPT_ACTIONS_TO_NODE20: true
         java-version: '22.0.1+8'
         distribution: 'temurin'
         cache: gradle
