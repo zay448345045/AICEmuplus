@@ -12,7 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest 
     steps:
-    - uses: actions/checkout@v4
+    - name: checkout
+      uses: actions/checkout@v4
     - name: set up JDK
       uses: actions/setup-java@v4
       with:
@@ -23,8 +24,11 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: update release   
+    
+    - name: Release
       uses: softprops/action-gh-release@v2
+      if: startsWith(github.ref, 'refs/tags/')
+      
       env: 
         asset-name: 'release.apk'
         GITHUB_TOKEN: ${{ secrets.token }} 
