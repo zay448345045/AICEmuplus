@@ -24,7 +24,7 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
     - name: update release   
-      uses: gogoadl/github-action-release-apk@v1.0.0-alpha09
+      uses: softprops/action-gh-release@v2
       env: 
         asset-name: 'release.apk'
         GITHUB_TOKEN: ${{ secrets.token }} 
