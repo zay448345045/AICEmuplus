@@ -10,11 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    permissions:
+   runs-on: ubuntu-latest
+   permissions:
       contents: read
       packages: write 
-    steps:
+   steps:
     - name: checkout
       uses: actions/checkout@v4
     - name: Build
