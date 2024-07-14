@@ -22,17 +22,7 @@ jobs:
    - name: Test
      run: cat Release.txt
       
-      
-      
-   - name: set up JDK
-     uses: actions/setup-java@v4
-     with:
-       java-version: '21'
-       distribution: 'temurin'
-       cache: gradle
-   - name: Install NDK
-     run: echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.0.11902837"
-   - name: Gradle Build
+   - name: Gradle setup
      uses: gradle/actions/setup-gradle@v3.4.2
      env:
          GITHUB_TOKEN: ${{ secrets.token }}
@@ -40,16 +30,59 @@ jobs:
          arguments: assembleDebug
    - name: Grant execute permission for gradlew
      run: chmod +x gradlew
+      
+   - name: set up JDK
+     uses: actions/setup-java@v4
+     with:
+       java-version: '21'
+       distribution: 'temurin'
+       cache: gradle
+
+   - name: Install NDK
+     run: |
+      echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.0.11902837"
+      echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "build-tools;33.0.2"
+      ANDROID_NDK_ROOT=$(echo $ANDROID_SDK_ROOT/ndk/$ANDROID_NDK_VERSION)
+        echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT" >> $GITHUB_ENV
+        LIBCXX_SHARED_SO=$(find $ANDROID_NDK_ROOT -path \*/${{ matrix.config.libcxx }})
+        echo "LIBCXX_SHARED_SO=$LIBCXX_SHARED_SO" >> $GITHUB_ENV
+
+
+
+       
+   - name:   cmake cache
+     uses: actions/cache@v4
+     with:
+          path:         |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            app/.cxx
+          key: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/.gradle*', '**/gradle-wrapper.properties') }}
+            cmake-${{ hashFiles('gradle/libs.versions.toml', 'app/build.gradle.kts', 'app/CMakeLists.txt') }}
+            cmake-default-${{ hashFiles('gradle/libs.versions.toml', 'app/build.gradle.kts', 'app/src/main/cpp/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+            cmake-default-
+   
+   
+   
    - name: Build with Gradle
-     run: ./gradlew build
+     run: ./gradlew assembleDefaultDebug
     
-   - name: Release
+   - name: output apk
      uses: softprops/action-gh-release@v2
      if: startsWith(github.ref, 'refs/tags/')
      with:
        body: Bump Version
        files: Release.apk
-     
+   - name: Upload ARM64
+     uses: actions/upload-artifact@v4
+     with:
+          name: default-arm64-v8a-${{ github.sha }}
+          path: app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
+
+
      env: 
         asset-name: 'release.apk'
         GITHUB_TOKEN: ${{ secrets.token }} 
