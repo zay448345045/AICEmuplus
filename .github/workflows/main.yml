@@ -27,13 +27,13 @@ jobs:
    - name: set up JDK
      uses: actions/setup-java@v4
      with:
-       java-version: '20'
+       java-version: '21'
        distribution: 'temurin'
        cache: gradle
    - name: Install NDK
      run: echo "y" | ${ANDROID_SDK_ROOT}/cmdline-tools/latest/bin/sdkmanager --install "ndk;27.0.11902837"
    - name: Gradle Build
-     uses: gradle/actions/setup-gradle@v3
+     uses: gradle/actions/setup-gradle@v3.4.2
      env:
          GITHUB_TOKEN: ${{ secrets.token }}
      with:
