@@ -41,7 +41,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
           name: default-arm64-v8a-${{ github.sha }}
-          path: ./
+          path: app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
       env: 
           asset-name: 'debug.apk'
           GITHUB_TOKEN: ${{ secrets.token }} 
