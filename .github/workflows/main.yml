@@ -9,15 +9,16 @@ on:
     branches: [ "fixed" ]
 
 jobs:
-  build:
+  apk:
     runs-on: ubuntu-latest 
     steps:
     - name: checkout
       uses: actions/checkout@v4
     - name: Build
-      run: echo ${{ github.sha }} > Release.txt
+     # run: echo ${{ github.sha }} > Release.txt
+      run: echo running on branch ${GITHUB_master}#REF##*/
     - name: Test
-      run: cat Release.txt
+     # run: cat Release.txt
     - name: set up JDK
       uses: actions/setup-java@v4
       with:
@@ -30,19 +31,23 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
-      run: ./gradlew build
+      run: bash ./gradlew build assembleDebug --stacktrace
     
     - name: Release
-      uses: softprops/action-gh-release@v2
+      #uses: softprops/action-gh-release@v2
+      uses: actions/upload-artifact@v4
       if: startsWith(github.ref, 'refs/tags/')
       with:
           files: debug.apk
     - name: Upload ARM64
       uses: actions/upload-artifact@v4
       with:
-          name: default-arm64-v8a-${{ github.sha }}
-          path: app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
-      env: 
-          asset-name: 'debug.apk'
-          GITHUB_TOKEN: ${{ secrets.token }} 
-          APP_FOLDER: app
+          #name: default-arm64-v8a-${{ github.sha }}
+          name: apk
+          #path: app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+     # env: 
+    
+       #   asset-name: 'debug.apk'
+      #    GITHUB_TOKEN: ${{ secrets.token }} 
+     #     APP_FOLDER: app
