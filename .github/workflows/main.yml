@@ -14,10 +14,10 @@ jobs:
     steps:
     - name: checkout
       uses: actions/checkout@v4
-    - name: Build
+#    - name: Build
      # run: echo ${{ github.sha }} > Release.txt
       
-    - name: Test
+#    - name: Test
      # run: cat Release.txt
     - name: set up JDK
       uses: actions/setup-java@v4
@@ -33,7 +33,7 @@ jobs:
       
 
     
-    - name: Release
+    - name: upload apk
       #uses: softprops/action-gh-release@v2
       uses: actions/upload-artifact@v4
    #   if: startsWith(github.ref, 'refs/tags/')
@@ -46,7 +46,7 @@ jobs:
           name: apk
           path: '**/*.apk'
           #path: app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+#          path: app/build/outputs/apk/debug/app-debug.apk
    #   env: 
     
        #   asset-name: 'debug.apk'
