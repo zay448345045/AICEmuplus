@@ -3,8 +3,6 @@ name: Android CI
 on:
   push:
     branches: [ "fixed" ]
-    tags:
-      - "*"
   pull_request:
     branches: [ "fixed" ]
 
