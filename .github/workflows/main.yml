@@ -58,7 +58,7 @@ jobs:
           files: |
             app/build/outputs/apk/release/*.apk
             app/build/outputs/apk/debug/*.apk
-        env:
+          env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}    
 #    - name: upload apk
       #uses: softprops/action-gh-release@v2
