@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace 'moe.tqlwsl.aicemu'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "moe.tqlwsl.aicemu"
