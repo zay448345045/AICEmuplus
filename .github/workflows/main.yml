@@ -32,8 +32,14 @@ jobs:
     
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+#    - name: Build with Gradle
+#      run: bash ./gradlew assembleDebug 
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v5
+      with:
+          gradle-version: latest
     - name: Build with Gradle
-      run: bash ./gradlew assembleDebug 
+      run: ./gradlew assembleDebug
       
 #        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
     - name: 更新 Nightly
